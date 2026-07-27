@@ -1,7 +1,7 @@
 const express = require('express');
 
 const controller = require(
-  '../controllers/contact.controller'
+  '../controllers/footer.controller'
 );
 
 const validate = require(
@@ -15,32 +15,31 @@ const {
 );
 
 const {
-  updateRules,
+  footerUpdateRules,
 } = require(
-  '../validators/contact.validator'
+  '../validators/footer.validator'
 );
+
+// PUBLIC
 
 const publicRouter = express.Router();
 
 publicRouter.get(
   '/',
-  controller.getPublic
+  controller.getFooter
 );
+
+// ADMIN
 
 const adminRouter = express.Router();
 
 adminRouter.use(authenticateAdmin);
 
-adminRouter.get(
-  '/',
-  controller.getAdmin
-);
-
 adminRouter.put(
   '/',
-  updateRules,
+  footerUpdateRules,
   validate,
-  controller.update
+  controller.updateFooter
 );
 
 module.exports = {

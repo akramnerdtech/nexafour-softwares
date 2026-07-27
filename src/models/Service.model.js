@@ -18,49 +18,55 @@ const serviceSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, 'Title is required'],
+      required: true,
       trim: true,
-      maxlength: [150, 'Title cannot exceed 150 characters'],
+      maxlength: 150,
     },
+
     slug: {
       type: String,
-      required: [true, 'Slug is required'],
       unique: true,
       lowercase: true,
       trim: true,
-      match: [/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be URL-friendly'],
     },
+
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ServiceCategory',
+      required: true,
+    },
+
     shortDescription: {
       type: String,
-      required: [true, 'Short description is required'],
-      trim: true,
-      maxlength: [300, 'Short description cannot exceed 300 characters'],
+      required: true,
+      maxlength: 300,
     },
+
     description: {
       type: String,
-      required: [true, 'Description is required'],
-      trim: true,
-      maxlength: [5000, 'Description cannot exceed 5000 characters'],
+      required: true,
+      maxlength: 5000,
     },
+
     icon: {
       type: String,
-      trim: true,
       default: null,
     },
+
     image: {
       type: String,
       default: null,
     },
+
     status: {
       type: String,
-      enum: {
-        values: Object.values(STATUSES),
-        message: '{VALUE} is not a valid status',
-      },
+      enum: Object.values(STATUSES),
       default: STATUSES.DRAFT,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 serviceSchema.pre('validate', async function (next) {
@@ -68,20 +74,8 @@ serviceSchema.pre('validate', async function (next) {
     this.slug = slugify(this.title);
   }
 
-  if (this.slug) {
-    this.slug = slugify(this.slug);
-    const existing = await mongoose.models.Service.findOne({
-      slug: this.slug,
-      _id: { $ne: this._id },
-    });
-    if (existing) {
-      this.slug = `${this.slug}-${Date.now()}`;
-    }
-  }
-
   next();
 });
 
 module.exports = mongoose.model('Service', serviceSchema);
 module.exports.STATUSES = STATUSES;
-module.exports.slugify = slugify;

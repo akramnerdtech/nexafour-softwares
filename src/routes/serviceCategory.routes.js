@@ -1,50 +1,62 @@
 const express = require('express');
 
-const controller = require('../controllers/service.controller');
+const controller = require(
+  '../controllers/serviceCategory.controller'
+);
 
-const validate = require('../middleware/validate.middleware');
+const validate = require(
+  '../middleware/validate.middleware'
+);
 
 const {
   authenticateAdmin,
-} = require('../middleware/adminAuth.middleware');
+} = require(
+  '../middleware/adminAuth.middleware'
+);
 
 const {
   idParam,
-  slugParam,
-  statusQuery,
-  categoryQuery,
-  serviceCreateRules,
-  serviceUpdateRules,
-} = require('../validators/service.validator');
+  createRules,
+  updateRules,
+} = require(
+  '../validators/serviceCategory.validator'
+);
 
 const publicRouter = express.Router();
 
+/**
+ * PUBLIC ROUTES
+ */
+
+// GET ALL ACTIVE CATEGORIES
 publicRouter.get(
   '/',
-  categoryQuery,
-  validate,
   controller.getAllPublic
 );
 
+// GET CATEGORY BY ID
 publicRouter.get(
-  '/:slug',
-  slugParam,
+  '/:id',
+  idParam,
   validate,
-  controller.getBySlugPublic
+  controller.getById
 );
+
+/**
+ * ADMIN ROUTES
+ */
 
 const adminRouter = express.Router();
 
 adminRouter.use(authenticateAdmin);
 
+// GET ALL CATEGORIES
 adminRouter.get(
   '/',
-  statusQuery,
-  categoryQuery,
-  validate,
   controller.getAll
 );
 
+// GET CATEGORY BY ID
 adminRouter.get(
   '/:id',
   idParam,
@@ -52,20 +64,23 @@ adminRouter.get(
   controller.getById
 );
 
+// CREATE CATEGORY
 adminRouter.post(
   '/',
-  serviceCreateRules,
+  createRules,
   validate,
   controller.create
 );
 
+// UPDATE CATEGORY
 adminRouter.patch(
   '/:id',
-  serviceUpdateRules,
+  updateRules,
   validate,
   controller.update
 );
 
+// DELETE CATEGORY
 adminRouter.delete(
   '/:id',
   idParam,

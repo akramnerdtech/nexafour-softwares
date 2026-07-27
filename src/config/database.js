@@ -29,6 +29,7 @@ const registerConnectionEvents = () => {
 };
 
 const connectDB = async () => {
+  console.log("MONGODB_URI =", mongodbUri);
   if (mongoose.connection.readyState === 1) {
     return mongoose.connection;
   }

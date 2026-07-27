@@ -15,11 +15,19 @@ const serviceRoutes = require('./service.routes');
 const blogRoutes = require('./blog.routes');
 const testimonialRoutes = require('./testimonial.routes');
 const teamMemberRoutes = require('./teamMember.routes');
+const serviceCategoryRoutes = require('./serviceCategory.routes');
 const contactRoutes = require('./contact.routes');
+const footerRoutes = require('./footer.routes');
+
+
 
 const router = express.Router();
 
 router.use(authenticateAdmin);
+router.use(
+  '/service-categories',
+  serviceCategoryRoutes.adminRouter
+);
 
 router.get('/dashboard', getDashboard);
 
@@ -28,12 +36,21 @@ router.get('/users/:id', userIdParam, validate, getUserById);
 router.patch('/users/:id', updateUserRules, validate, updateUser);
 router.delete('/users/:id', userIdParam, validate, deleteUser);
 
+
 router.use('/hero', heroRoutes.adminRouter);
 router.use('/about', aboutRoutes.adminRouter);
 router.use('/services', serviceRoutes.adminRouter);
 router.use('/blogs', blogRoutes.adminRouter);
 router.use('/testimonials', testimonialRoutes.adminRouter);
+router.use(
+  '/footer',
+  footerRoutes.adminRouter
+);
 router.use('/team', teamMemberRoutes.adminRouter);
-router.use('/contacts', contactRoutes.adminRouter);
+router.use(
+  '/contact',
+  contactRoutes.adminRouter
+);
+
 
 module.exports = router;

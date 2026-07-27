@@ -18,7 +18,7 @@ const uploadAvatar = asyncHandler(async (req, res) => {
     if (fs.existsSync(oldPath)) {
       fs.unlinkSync(oldPath);
     }
-  }
+  } 
 
   const user = await User.findByIdAndUpdate(
     req.user._id,
